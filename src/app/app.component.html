@@ -5,17 +5,17 @@
 <p> Polling Status: <span id="polling-status"> Stopped </span> </p>
 <div>
   <label for="catsCheckbox">Cats</label>
-  <input type="radio" name="type" id="catsCheckbox" value="cats" checked />
+  <input #catsCheckbox type="radio" name="type" id="catsCheckbox" value="cats" checked />
   <label for="meatsCheckbox">Meats</label>
-  <input type="radio" name="type" id="meatsCheckbox" value="meats"/>
+  <input # meatsSheckbox type="radio" name="type" id="meatsCheckbox" value="meats"/>
 </div>
 
 <div>
-  <button id="start">Start polling</button>
-  <button id="stop">Stop polling</button>
+  <button id="start" #start>Start polling</button>
+  <button id="stop" #stop>Stop polling</button>
 </div>
 
-<img style="max-width: 400px; max-height: 400px;" id="cat" src="https://placekitten.com/g/205/205" alt="incoming cats!"/>
+<img #catImage style="max-width: 400px; max-height: 400px;" id="cat" src="https://placekitten.com/g/205/205" alt="incoming cats!"/>
 
 
-<p id="text" style="display: none;">Text Will appear here</p>
+<p #text id="text" style="display: none;">Text Will appear here</p>

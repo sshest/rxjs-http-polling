@@ -3,13 +3,26 @@ import { map, mapTo, switchMap, tap, mergeMap, takeUntil, filter, finalize } fro
 
 declare type RequestCategory = 'cats' | 'meats';
 
-import { Component } from '@angular/core';
+import {AfterContentInit, Component, ContentChild} from '@angular/core';
+import {RadioControlValueAccessor} from "@angular/forms";
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
+export class AppComponent implements AfterContentInit{
   title = 'http-polling-rxjs';
+
+  @ContentChild('start') startButton!: HTMLButtonElement;
+  @ContentChild('stop') stopButton!: HTMLButtonElement;
+  @ContentChild('meatsCheckbox') meatsCheckbox!: HTMLInputElement;
+  @ContentChild('catsCheckbox') catsCheckbox!: HTMLInputElement;
+  @ContentChild('catsImage') catsImage!: HTMLImageElement;
+  @ContentChild('text') text!: HTMLParagraphElement;
+
+  ngAfterContentInit() {
+
+  }
+
 }
