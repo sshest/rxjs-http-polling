@@ -3,11 +3,11 @@
   Select Cats or Meats and start polling! The Cats option will request random <a href="https://plackitten.com">place kitten</a> images, and the meats option will request random blocks of <a href="https://baconipsum.com/json-api/">bacon-ipsum</a>.
 </p>
 <p> Polling Status: <span #pollingStatus id="polling-status"> Stopped </span> </p>
-<div>
+<div #checkboxGroup>
   <label for="catsCheckbox">Cats</label>
-  <input #catsCheckbox type="radio" name="type" id="catsCheckbox" value="cats" checked />
+  <input #catsCheckbox type="radio" name="category" id="catsCheckbox" value="cats" checked />
   <label for="meatsCheckbox">Meats</label>
-  <input #meatsCheckbox type="radio" name="type" id="meatsCheckbox" value="meats"/>
+  <input #meatsCheckbox type="radio" name="category" id="meatsCheckbox" value="meats"/>
 </div>
 
 <div>

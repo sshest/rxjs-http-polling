@@ -1,4 +1,17 @@
-import {Observable, Subscription, of, fromEvent, from, empty, merge, timer, startWith, iif, repeat} from 'rxjs';
+import {
+  Observable,
+  Subscription,
+  of,
+  fromEvent,
+  from,
+  empty,
+  merge,
+  timer,
+  startWith,
+  iif,
+  repeat,
+  distinctUntilChanged
+} from 'rxjs';
 import { map, mapTo, switchMap, tap, mergeMap, takeUntil, filter, finalize } from 'rxjs/operators';
 
 declare type CatsCategory = 'cats';
@@ -21,6 +34,7 @@ export class AppComponent implements AfterContentInit{
   @ViewChild('stop', {static: true}) stopButton!: ElementRef;
   @ViewChild('meatsCheckbox', {static: true}) meatsCheckbox!: ElementRef;
   @ViewChild('catsCheckbox', {static: true}) catsCheckbox!: ElementRef;
+  @ViewChild('checkboxGroup', {static: true}) checkboxGroup!: ElementRef;
   @ViewChild('catsImage', {static: true}) catsImage!: ElementRef;
   @ViewChild('text', {static: true}) text!: ElementRef;
   @ViewChild('pollingStatus', {static: true}) pollingStatus!: ElementRef;
@@ -29,30 +43,42 @@ export class AppComponent implements AfterContentInit{
   ngAfterContentInit() {
     const stopPolling$ = fromEvent(this.stopButton.nativeElement, 'click');
 
-    const catsClick$ = fromEvent(this.catsCheckbox.nativeElement, 'click')
-      .pipe(
-        map(_ => 'cats'),
-        tap(_ => {
+    // const catsClick$ = fromEvent(this.catsCheckbox.nativeElement, 'click')
+    //   .pipe(
+    //     map(_ => 'cats'),
+    //     tap(_ => {
+    //       this.catsImage.nativeElement.style.display = 'block';
+    //       this.text.nativeElement.style.display = 'none';
+    //     })
+    //   );
+    // const meatsClick$ = fromEvent(this.meatsCheckbox.nativeElement, 'click')
+    //   .pipe(
+    //     map(_ => 'meats'),
+    //     tap(_ => {
+    //       this.catsImage.nativeElement.style.display = 'none';
+    //       this.text.nativeElement.style.display = 'block';
+    //     })
+    //   );
+
+    const categoryClick$ = fromEvent(this.checkboxGroup.nativeElement, 'change').pipe(
+      map((e: any) => e.target.value),
+      filter(val => val === 'cats' || val === 'meats'),
+      tap(val => {
+        if (this.isCats(val)) {
           this.catsImage.nativeElement.style.display = 'block';
           this.text.nativeElement.style.display = 'none';
-        })
-      );
-    const meatsClick$ = fromEvent(this.meatsCheckbox.nativeElement, 'click')
-      .pipe(
-        map(_ => 'meats'),
-        tap(_ => {
+        } else {
           this.catsImage.nativeElement.style.display = 'none';
           this.text.nativeElement.style.display = 'block';
-        })
-      );
+        }
+      })
+    )
 
       fromEvent(this.startButton.nativeElement, 'click')
       .pipe(
-        mergeMap(_ => merge(
-          catsClick$,
-          meatsClick$
-        ).pipe(
+        mergeMap(_ => categoryClick$.pipe(
           startWith('cats'),
+          distinctUntilChanged()
         )),
         mergeMap((category: string): Observable<{interval: number, category: RequestCategory}> => { // @ts-ignore
           return of({interval: 5000, category})}),
