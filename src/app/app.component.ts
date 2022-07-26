@@ -1,4 +1,4 @@
-import {Observable, Subscription, of, fromEvent, from, empty, merge, timer, startWith, iif} from 'rxjs';
+import {Observable, Subscription, of, fromEvent, from, empty, merge, timer, startWith, iif, repeat} from 'rxjs';
 import { map, mapTo, switchMap, tap, mergeMap, takeUntil, filter, finalize } from 'rxjs/operators';
 
 declare type CatsCategory = 'cats';
@@ -29,11 +29,28 @@ export class AppComponent implements AfterContentInit{
   ngAfterContentInit() {
     const stopPolling$ = fromEvent(this.stopButton.nativeElement, 'click');
 
-    fromEvent(this.startButton.nativeElement, 'click')
+    const catsClick$ = fromEvent(this.catsCheckbox.nativeElement, 'click')
+      .pipe(
+        map(_ => 'cats'),
+        tap(_ => {
+          this.catsImage.nativeElement.style.display = 'block';
+          this.text.nativeElement.style.display = 'none';
+        })
+      );
+    const meatsClick$ = fromEvent(this.meatsCheckbox.nativeElement, 'click')
+      .pipe(
+        map(_ => 'meats'),
+        tap(_ => {
+          this.catsImage.nativeElement.style.display = 'none';
+          this.text.nativeElement.style.display = 'block';
+        })
+      );
+
+      fromEvent(this.startButton.nativeElement, 'click')
       .pipe(
         mergeMap(_ => merge(
-          fromEvent(this.catsCheckbox.nativeElement, 'click').pipe(map(_ => 'cats')),
-          fromEvent(this.meatsCheckbox.nativeElement, 'click').pipe(map(_ => 'meats'))
+          catsClick$,
+          meatsClick$
         ).pipe(
           startWith('cats'),
         )),
@@ -51,7 +68,7 @@ export class AppComponent implements AfterContentInit{
               finalize(() => this.pollingStatus.nativeElement.innerHTML = 'Stopped')
             )
         ),
-
+        repeat()
       )
       .subscribe();
   }
